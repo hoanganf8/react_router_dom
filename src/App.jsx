@@ -1,3 +1,4 @@
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
@@ -11,7 +12,12 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Auth from "./pages/auth/Auth";
 import ProductDetail from "./pages/ProductDetail";
+import Orders from "./pages/orders/Orders";
+import OrdersCompleted from "./pages/orders/OrdersCompleted";
+import AuthMiddleware from "./middlewares/AuthMiddleware";
+import ScrollTop from "./components/ScrollTop";
 // import AuthIndex from "./pages/auth";
+const LazyAbout = React.lazy(() => import("./pages/About"));
 
 const App = () => {
   return (
@@ -21,9 +27,17 @@ const App = () => {
           <Sidebar />
         </div>
         <div className="col-9">
+          <ScrollTop />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/gioi-thieu" element={<About />} />
+            <Route
+              path="/gioi-thieu"
+              element={
+                <React.Suspense fallback={<p>Loading...</p>}>
+                  <LazyAbout />
+                </React.Suspense>
+              }
+            />
             <Route path="/san-pham">
               <Route index element={<Products />} />
               <Route path=":path" element={<ProductDetail />} />
@@ -36,6 +50,10 @@ const App = () => {
               {/* <Route index element={<AuthIndex />} /> */}
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
+            </Route>
+            <Route path="/orders" element={<AuthMiddleware />}>
+              <Route index element={<Orders />} />
+              <Route path="completed" element={<OrdersCompleted />} />
             </Route>
           </Routes>
         </div>
